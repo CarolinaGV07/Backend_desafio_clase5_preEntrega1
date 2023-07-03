@@ -6,14 +6,23 @@ export default class CartManager extends FileManager {
         super('./carts.json')
     }
 
-    cartCreate = async (data) => {
-        const result = await this.set(data)
-        return result
+    createCart = async () => {
+        const data = {
+            products: []
+        }
+        return await this.set(data)
+         
     }
 
-    cartList = async () => {
-        const result = await this.get()
-        return result
+    addProduct = async (cid,pid) => {
+        const cart = await this.getId(cid)
+        cart.products.push(pid)
+        return await this.update(cart)
+    }
+
+    listCarts = async () => {
+        return await this.get()
+        
     }
 
 }

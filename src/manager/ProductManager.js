@@ -1,29 +1,26 @@
-
-import fs from 'fs'
 import FileManager from './FileManager.js'
 
 export default class ProductManager extends FileManager{
     constructor () {  
         super('./database.json') 
-        this.id = 0
     }
 
-    createProduct = async ({title, description,price,thumbnail,stock,code}) => {
+    createProduct = async ({title, description,code,price,status,stock, category,thumbnail}) => {
         
-        if(!title || !description || !price || !thumbnail || !stock || !code){
-            console.log("All fields must be completed")
+        if(!title || !description || !code || !price || !status || !stock || !category){ //Sin validar thumbnail, y pide que sea un array de strings
+            console.log("All fields must be completed") //Status es true por defecto?
             return false 
         }
         
 
         const products = await this.listProducts()
-        console.log(products)
         const invalidCode = products.some(prod => prod.code === code)
         if(invalidCode){
             console.error("Code entered has already been used")
         }
 
-        const product = {title, description, price, thumbnail, stock, code, id: await this.getId()}
+        const product = {title, description, code, price, status, stock, category, thumbnail, id: await this.getId()}
+        console.log(product.thumbnail)
         const list = await this.listProducts()
         list.push(product)
 
@@ -37,16 +34,9 @@ export default class ProductManager extends FileManager{
             const result = await this.get()
             return result
         } catch (error) {
-            console.error('File not found')
+            console.error("File not found")
             return []
         }
-
-    }
-
-    getId =async () => {
-        const products = await this.listProducts()
-        const count = products.length
-        return (count > 0) ? products[count - 1].id +1 :1 
 
     }
 
@@ -57,7 +47,7 @@ export default class ProductManager extends FileManager{
         if(findProduct){
             return findProduct
         } else {
-            console.error ("Not found")
+            return "Not found"
         }
 
     }
@@ -66,8 +56,8 @@ export default class ProductManager extends FileManager{
         const upProd = await this.listProducts()
         const productIndex = upProd.findIndex((prod) => prod.id === id)
         if(!productIndex === -1){
-            console.error('Product not updated')
-            return; 
+            return "Product not updated"
+             
         }
         const updateProducts = upProd.map((product) =>{
             if(product.id===id){
@@ -76,25 +66,22 @@ export default class ProductManager extends FileManager{
             }
                 return product
         })
-
-        fs.promises.writeFile(this.path,JSON.stringify(updateProducts),'utf-8')
-        //return o console.log "Registro actualizado correctamente" , esto seria muy buena practica y muy importante 
+        const result = await this.update(updateProducts)
+        return (result, "Register updated successfully")
     }
 
-
-    
     deleteProduct = async (productId) => {
 
         const delProd = await this.listProducts()
         const prodExist = delProd.findIndex((prod) => prod.id === productId)
         if(prodExist === -1){
-            console.error('El producto no existe')
-            return;
+            return "Product doesn`t exist"
+            
         }
 
         const deleteProduct = delProd.filter((prod) => prod.id !== productId)
 
-        await fs.promises.writeFile(this.path, JSON.stringify(deleteProduct),'utf-8')
-        //return o console.log "Registro eliminado correctamente" , esto seria muy buena practica y muy importante 
+        const result = await this.delete(deleteProduct)
+        return (result, "Register deleted successfully")
     }
 }
