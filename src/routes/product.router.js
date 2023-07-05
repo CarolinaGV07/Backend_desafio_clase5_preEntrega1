@@ -37,9 +37,8 @@ router.post('/', async (req,res) => {
 
 router.put('/:pid', async (req,res)=>{
     const pid = parseInt(req.params.pid)
-    const productUpdated = await productManager.updateProduct(pid) //Se deben actualizar los campos enviados desde el body
+    const productUpdated = await productManager.updateProduct(pid)
     res.send(productUpdated)
-    //hay que hacer validacion para que no se actualice o se elimine el id?
 })
 
 router.delete('/:pid', async (req,res) => {

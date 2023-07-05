@@ -7,8 +7,8 @@ export default class ProductManager extends FileManager{
 
     createProduct = async ({title, description,code,price,status,stock, category,thumbnail}) => {
         
-        if(!title || !description || !code || !price || !status || !stock || !category){ //Sin validar thumbnail, y pide que sea un array de strings
-            console.log("All fields must be completed") //Status es true por defecto?
+        if(!title || !description || !code || !price || !status || !stock || !category){
+            console.log("All fields must be completed")
             return false 
         }
         
@@ -23,8 +23,6 @@ export default class ProductManager extends FileManager{
         console.log(product.thumbnail)
         const list = await this.listProducts()
         list.push(product)
-
-        
         const result = await this.set(list)
         return (result, "Product created correctly")
     }
@@ -37,7 +35,6 @@ export default class ProductManager extends FileManager{
             console.error("File not found")
             return []
         }
-
     }
 
     getProductById = async (productId) => {
@@ -49,7 +46,6 @@ export default class ProductManager extends FileManager{
         } else {
             return "Not found"
         }
-
     }
 
     updateProduct = async (id,productObj) => {
@@ -57,12 +53,10 @@ export default class ProductManager extends FileManager{
         const productIndex = upProd.findIndex((prod) => prod.id === id)
         if(!productIndex === -1){
             return "Product not updated"
-             
         }
         const updateProducts = upProd.map((product) =>{
             if(product.id===id){
                 return {...product,...productObj}
-    
             }
                 return product
         })
@@ -76,7 +70,6 @@ export default class ProductManager extends FileManager{
         const prodExist = delProd.findIndex((prod) => prod.id === productId)
         if(prodExist === -1){
             return "Product doesn`t exist"
-            
         }
 
         const deleteProduct = delProd.filter((prod) => prod.id !== productId)

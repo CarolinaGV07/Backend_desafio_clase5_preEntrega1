@@ -8,7 +8,7 @@ export default class CartManager extends FileManager {
 
     createCart = async () => {
         try{
-            const cart = await this.getCart()
+            const cart = await this.get()
             const lastCart = (cart.length !== 0) ? cart[cart.length-1].id+1 :1
             const data = {
                 id: lastCart,
@@ -23,11 +23,10 @@ export default class CartManager extends FileManager {
     }
 
     addProduct = async (cid,pid) => {
-        const cart = await this.getCart()
-        const cartId = cart.cid === cid
-        const productIn= cartId.products.findIndex(p => p.pid == pid)
-        if(productIn) {
-            cart.products[index].quantity += quantity 
+        const cart = await this.getCart(id)
+        const productIn= cart.products.findIndex(p => p.id == pid)
+        if(productIn !== -1) {
+            cart.products[productIn].quantity += quantity 
         } else{
             cart.products.push({
                 product: pid,
@@ -40,7 +39,7 @@ export default class CartManager extends FileManager {
 
     getCart = async (cid) => {
         const cart = await this.get()
-        const cartId = cart.find(c => c.cid === cid)
+        const cartId = cart.find(c => c.id === cid)
         return cartId
         
     }
