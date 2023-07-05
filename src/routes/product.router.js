@@ -23,7 +23,7 @@ router.get('/', async (req,res) => {
 router.get('/:pid', async (req,res)=>{
 
     const id = parseInt(req.params.pid)
-    const productFounded = await product.getProductById(id)
+    const productFounded = await productManager.getProductById(id)
     
     if (!productFounded) res.status(404).send({ error: 'Product not found' })
     else res.send(productFounded)

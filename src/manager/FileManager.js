@@ -6,9 +6,10 @@ class FileManager {
         this.filename = filename
     }
 
-    getId = (list) => {
-        const count = list.length
-        const id = (count > 0) ? products[count - 1].id +1 :1
+    getId = async () => {
+        const list = await this.get()
+        console.log(list)
+        const id = (list.length !== 0) ? list[list.length - 1].id +1 :1
         return id 
     }
 
@@ -31,10 +32,7 @@ class FileManager {
     }
 
     update = async (data) => {
-        const list = await this.get()
-        const index = list.findIndex(p => p.id == data.id)
-        list (index) = data
-        return fs.promises.writeFile (this.filename, JSON.stringify(list))
+        return fs.promises.writeFile (this.filename, JSON.stringify(data))
     }
 
     delete = async (Id) => {
