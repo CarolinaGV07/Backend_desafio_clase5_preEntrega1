@@ -11,6 +11,10 @@ export default class ProductManager extends FileManager{
             console.log("All fields must be completed")
             return false 
         }
+
+        if(typeof thumbnail !== 'object'){
+            return false
+        }
         
 
         const products = await this.listProducts()
@@ -19,7 +23,8 @@ export default class ProductManager extends FileManager{
             console.error("Code entered has already been used")
         }
 
-        const product = {title, description, code, price, status, stock, category, thumbnail, id: await this.getId()}
+        const product = {title, description, code, price, status: true , stock, category, thumbnail, id: await this.getId()}
+
         console.log(product.thumbnail)
         const list = await this.listProducts()
         list.push(product)
