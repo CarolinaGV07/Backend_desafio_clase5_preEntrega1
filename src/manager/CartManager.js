@@ -3,9 +3,10 @@ import FileManager from './FileManager.js'
 export default class CartManager extends FileManager {
     
     constructor() {
-        super('./carts.json')
+        super('./database/carts.json')
     }
 
+    //Crea un nuevo carrito y lo agrega a la lista de carritos existentes
     createCart = async () => {
         try{
             const cart = await this.get()
@@ -22,27 +23,36 @@ export default class CartManager extends FileManager {
         }   
     }
 
+    //Agrega productos a un carrito
     addProduct = async (cid,pid) => {
         const cart = await this.getCart(id)
-        if(!cart) throw "Cart not exist"
-        const productIn= cart.products.findIndex(p => p.id == pid)
-        if(productIn !== -1) {
-            cart.products[productIn].quantity += quantity 
-        } else{
-            cart.products.push({
-                id: pid,
-                quantity: 1
-        })
-        
-        return await this.update([cart])
+        try{
+            if(!cart) throw "Cart not exist"
+            const productIn= cart.products.findIndex(p => p.id == pid)
+            if(productIn !== -1) {
+                cart.products[productIn].quantity += quantity 
+            } else{
+                cart.products.push({
+                    id: pid,
+                    quantity: 1
+            })
+            
+            return await this.update([cart])
+            }
+        } catch(error){
+            return "Error"
         }
+
     }
 
+    //Obtiene un carrito existente
     getCart = async (cid) => {
         const cart = await this.get()
-        const cartId = cart.find(c => c.id === cid)
-        return cartId
-        
+        try{
+            const cartId = cart.find(c => c.id === cid)
+            return cartId
+        } catch(error){
+            return "Error"
+        }
     }
-
 }
